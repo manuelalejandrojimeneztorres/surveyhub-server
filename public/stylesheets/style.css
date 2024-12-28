@@ -1,0 +1,39 @@
+/* body {
+  padding: 50px;
+  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+}
+
+a {
+  color: #00B7FF;
+}
+*/
+
+body {
+  padding: 20px;
+  font-family: "Lucida Grande", Helvetica, Arial, sans-serif;
+  background-color: #f4f4f4;
+  color: #333;
+}
+
+a {
+  color: #007bff;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+h1 {
+  color: #333;
+}
+
+p,
+ul {
+  color: #555;
+  line-height: 1.6;
+}
+
+ul {
+  padding-left: 20px;
+}

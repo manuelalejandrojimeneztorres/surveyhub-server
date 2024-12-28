@@ -1,0 +1,49 @@
+//- extends layout
+
+//- block content
+//-   h1= title
+//-   p Welcome to #{title}
+
+extends layout
+
+block content
+  h1= title
+  p #{description}
+
+  // Versión de la API
+  p API Version: #{version}
+  
+  // Estado de la API
+  p System Status: #{status}
+
+  // Rutas disponibles
+  p Available Endpoints:
+  ul
+    each route in routes
+      li
+        a(href=route.path) #{route.path} - #{route.description}
+
+  // Enlace a la documentación
+  p For comprehensive API documentation, visit: 
+  a(href=documentationLink) #{documentationLink}
+
+  // Autenticación
+  if authEnabled
+    p Authentication: This API utilizes Bearer tokens for secure access.
+    p For detailed authentication instructions, visit:
+    a(href=authDocsLink) #{authDocsLink}
+
+  // Ejemplo de uso
+  if showExample
+    p Example Request:
+    pre #{exampleRequest}
+
+  // Información de contacto
+  p For assistance, please contact us at: 
+  a(href='mailto:' + supportEmail) #{supportEmail}
+
+  // Términos de servicio y política de privacidad
+  p Review our 
+    a(href=termsLink) Terms of Service 
+    | and 
+    a(href=privacyLink) Privacy Policy.
