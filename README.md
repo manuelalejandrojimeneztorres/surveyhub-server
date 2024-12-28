@@ -5,7 +5,7 @@
 ![Sequelize](https://img.shields.io/badge/Sequelize-6.37.4-blue?style=for-the-badge&logo=sequelize)
 ![MySQL](https://img.shields.io/badge/MySQL-8.x-orange?style=for-the-badge&logo=mysql)
 ![JWT](https://img.shields.io/badge/JWT-Security-critical?style=for-the-badge&logo=jsonwebtokens)
-![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)
+![License](https://img.shields.io/badge/License-Apache%202.0-blue?style=for-the-badge)
 ![Build Status](https://img.shields.io/github/actions/workflow/status/manuelalejandrojimeneztorres/surveyhub-server/backend-ci.yml?style=for-the-badge)
 ![Coverage](https://img.shields.io/codecov/c/github/manuelalejandrojimeneztorres/surveyhub-server?style=for-the-badge)
 ![Dependencies](https://img.shields.io/badge/Dependencies-Up%20to%20date-brightgreen?style=for-the-badge)
@@ -256,7 +256,7 @@ For support, contact:
 
 ## License
 
-This project is licensed under the **MIT License**. See the [LICENSE](LICENSE) file for more details.
+This project is licensed under the **Apache License 2.0**. See the [LICENSE.txt](LICENSE.txt) file for more details.
 
 [🔼 Back to Top](#table-of-contents)
 
