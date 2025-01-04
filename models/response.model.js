@@ -1,5 +1,5 @@
 module.exports = (sequelize, Sequelize) => {
-    const Question = sequelize.define('question', {
+    const Response = sequelize.define('response', {
         id: {
             type: Sequelize.INTEGER.UNSIGNED,
             allowNull: false,
@@ -13,46 +13,28 @@ module.exports = (sequelize, Sequelize) => {
                 min: 1
             }
         },
-        order: {
-            type: Sequelize.INTEGER.UNSIGNED,
-            allowNull: false,
-            validate: {
-                notNull: {
-                    msg: 'Order is required'
-                },
-                isInt: true,
-                min: 1
-            }
-        },
-        text: {
-            type: Sequelize.STRING(255),
+        beginDate: {
+            type: Sequelize.DATE,
             allowNull: false,
             validate: {
                 notEmpty: true,
+                notNull: true,
                 notNull: {
-                    msg: 'Text is required'
+                    msg: 'Begin date is required'
                 },
-                len: {
-                    args: [1, 255],
-                    msg: 'Text must be between 1 and 255 characters'
+                isDate: true,
+                isDate: {
+                    msg: 'Must be a valid date'
                 }
             }
         },
-        isMandatory: {
-            type: Sequelize.STRING(3),
-            allowNull: false,
+        endDate: {
+            type: Sequelize.DATE,
+            allowNull: true,
             validate: {
-                notEmpty: true,
-                notNull: {
-                    msg: 'Is mandatory is required'
-                },
-                isIn: {
-                    args: [['No', 'Yes']],
-                    msg: 'Is mandatory must be one of: No, Yes'
-                },
-                len: {
-                    args: [1, 3],
-                    msg: 'Is mandatory must be between 1 and 3 characters'
+                isDate: true,
+                isDate: {
+                    msg: 'Must be a valid date'
                 }
             }
         },
@@ -90,7 +72,7 @@ module.exports = (sequelize, Sequelize) => {
             }
         }
     }, {
-        tableName: 'Question',
+        tableName: 'Response',
         freezeTableName: true,
         underscored: false,
         timestamps: false,
@@ -98,20 +80,16 @@ module.exports = (sequelize, Sequelize) => {
         collate: 'utf8mb4_spanish_ci',
         indexes: [
             {
-                name: 'AK_Question_SurveyId_Order',
+                name: 'AK_Response_SurveyId_SystemUserId',
                 unique: true,
-                fields: ['surveyId', 'order']
-            },
-            {
-                name: 'AK_Question_SurveyId_Text',
-                unique: true,
-                fields: ['surveyId', 'text']
+                fields: ['surveyId', 'systemUserId']
+
             }
         ]
     });
 
-    Question.associate = function (models) {
-        Question.belongsTo(models.survey, {
+    Response.associate = function (models) {
+        Response.belongsTo(models.survey, {
             foreignKey: {
                 name: 'surveyId',
                 type: Sequelize.INTEGER.UNSIGNED,
@@ -121,9 +99,9 @@ module.exports = (sequelize, Sequelize) => {
             onDelete: 'CASCADE'
         });
 
-        Question.belongsTo(models.questiontype, {
+        Response.belongsTo(models.systemuser, {
             foreignKey: {
-                name: 'questionTypeId',
+                name: 'systemUserId',
                 type: Sequelize.INTEGER.UNSIGNED,
                 allowNull: false
             },
@@ -131,14 +109,10 @@ module.exports = (sequelize, Sequelize) => {
             onDelete: 'CASCADE'
         });
 
-        Question.hasMany(models.questionoption, {
-            foreignKey: 'questionId'
-        });
-
-        Question.hasMany(models.answer, {
-            foreignKey: 'questionId'
+        Response.hasMany(models.answer, {
+            foreignKey: 'responseId'
         });
     };
 
-    return Question;
+    return Response;
 };

@@ -1,5 +1,5 @@
 module.exports = (sequelize, Sequelize) => {
-    const Question = sequelize.define('question', {
+    const Role = sequelize.define('role', {
         id: {
             type: Sequelize.INTEGER.UNSIGNED,
             allowNull: false,
@@ -13,46 +13,36 @@ module.exports = (sequelize, Sequelize) => {
                 min: 1
             }
         },
-        order: {
-            type: Sequelize.INTEGER.UNSIGNED,
+        name: {
+            type: Sequelize.STRING(50),
             allowNull: false,
+            unique: true,
             validate: {
+                notEmpty: true,
                 notNull: {
-                    msg: 'Order is required'
+                    msg: 'Name is required'
                 },
-                isInt: true,
-                min: 1
+                isIn: {
+                    args: [['System Administrator', 'Survey Manager', 'Respondent']],
+                    msg: 'Name must be one of: System Administrator, Survey Manager, Respondent'
+                },
+                len: {
+                    args: [1, 50],
+                    msg: 'Name must be between 1 and 50 characters'
+                }
             }
         },
-        text: {
+        description: {
             type: Sequelize.STRING(255),
             allowNull: false,
             validate: {
                 notEmpty: true,
                 notNull: {
-                    msg: 'Text is required'
+                    msg: 'Description is required'
                 },
                 len: {
                     args: [1, 255],
-                    msg: 'Text must be between 1 and 255 characters'
-                }
-            }
-        },
-        isMandatory: {
-            type: Sequelize.STRING(3),
-            allowNull: false,
-            validate: {
-                notEmpty: true,
-                notNull: {
-                    msg: 'Is mandatory is required'
-                },
-                isIn: {
-                    args: [['No', 'Yes']],
-                    msg: 'Is mandatory must be one of: No, Yes'
-                },
-                len: {
-                    args: [1, 3],
-                    msg: 'Is mandatory must be between 1 and 3 characters'
+                    msg: 'Description must be between 1 and 255 characters'
                 }
             }
         },
@@ -90,7 +80,7 @@ module.exports = (sequelize, Sequelize) => {
             }
         }
     }, {
-        tableName: 'Question',
+        tableName: 'Role',
         freezeTableName: true,
         underscored: false,
         timestamps: false,
@@ -98,47 +88,24 @@ module.exports = (sequelize, Sequelize) => {
         collate: 'utf8mb4_spanish_ci',
         indexes: [
             {
-                name: 'AK_Question_SurveyId_Order',
+                name: 'AK_Role_Name',
                 unique: true,
-                fields: ['surveyId', 'order']
-            },
-            {
-                name: 'AK_Question_SurveyId_Text',
-                unique: true,
-                fields: ['surveyId', 'text']
+                fields: ['name']
             }
         ]
     });
 
-    Question.associate = function (models) {
-        Question.belongsTo(models.survey, {
-            foreignKey: {
-                name: 'surveyId',
-                type: Sequelize.INTEGER.UNSIGNED,
-                allowNull: false
-            },
-            onUpdate: 'CASCADE',
-            onDelete: 'CASCADE'
+    Role.associate = function (models) {
+        Role.belongsToMany(models.systemuser, {
+            through: models.systemuserrole,
+            foreignKey: 'roleId',
+            otherKey: 'systemUserId',
         });
 
-        Question.belongsTo(models.questiontype, {
-            foreignKey: {
-                name: 'questionTypeId',
-                type: Sequelize.INTEGER.UNSIGNED,
-                allowNull: false
-            },
-            onUpdate: 'CASCADE',
-            onDelete: 'CASCADE'
-        });
-
-        Question.hasMany(models.questionoption, {
-            foreignKey: 'questionId'
-        });
-
-        Question.hasMany(models.answer, {
-            foreignKey: 'questionId'
+        Role.hasMany(models.systemuserrole, {
+            foreignKey: 'roleId'
         });
     };
 
-    return Question;
+    return Role;
 };

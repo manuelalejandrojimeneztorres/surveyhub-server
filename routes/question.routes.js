@@ -10,14 +10,17 @@ module.exports = app => {
     // Retrieve all Question
     router.get('/', auth.isAuthenticated, questions.findAll);
 
+    // Search for a Question by text
+    router.get('/:text', auth.isAuthenticated, questions.findByName);
+
+    // Retrieve all Question equals an id
+    router.get('/surveys/:id/questions', auth.isAuthenticated, questions.findBySurveyId);
+
+    // Retrieve all Question equals an id
+    router.get('/question-types/:id/questions', auth.isAuthenticated, questions.findByQuestionTypeId);
+
     // Retrieve a single Question with id
     router.get('/:id', auth.isAuthenticated, questions.findOne);
-
-    // Retrieve all Question equals an id
-    router.get('/surveys/:id/questions', auth.isAuthenticated, questions.findAllBySurveyId);
-
-    // Retrieve all Question equals an id
-    router.get('/question-types/:id/questions', auth.isAuthenticated, questions.findAllByQuestionTypeId);
 
     // Update a Question with id
     router.put('/:id', auth.isAuthenticated, questions.update);

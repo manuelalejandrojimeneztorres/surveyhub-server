@@ -146,6 +146,10 @@ module.exports = (sequelize, Sequelize) => {
         Survey.hasMany(models.question, {
             foreignKey: 'surveyId'
         });
+
+        Survey.hasMany(models.response, {
+            foreignKey: 'surveyId'
+        });
     };
 
     return Survey;

@@ -2,7 +2,8 @@ const db = require('../models');
 const SystemUser = db.systemuser;
 const Op = db.Sequelize.Op;
 const bcrypt = require('bcryptjs');
-const utils = require('../utils');
+const { getSystemUserRoles } = require('../utils/systemuser.utils');
+const authUtils = require('../utils/auth.utils');
 const jwt = require('jsonwebtoken');
 
 exports.signin = async (req, res) => {
@@ -57,11 +58,14 @@ exports.signin = async (req, res) => {
         // Update lastLoginAt field
         await user.update({ lastLoginAt: new Date() });
 
+        // Get user roles
+        const roles = await getSystemUserRoles(user.id);
+
         // Generate access token
-        const accessToken = utils.generateAccessToken(user);
+        const accessToken = authUtils.generateAccessToken(user, roles);
 
         // Get basic user details
-        const userDetails = utils.extractBasicUserDetails(user);
+        const userDetails = authUtils.extractBasicUserDetails(user, roles);
 
         // Return the access token along with user details
         return res.status(200).json({ user: userDetails, access_token: accessToken });

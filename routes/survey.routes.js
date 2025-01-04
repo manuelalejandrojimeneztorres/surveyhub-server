@@ -10,11 +10,14 @@ module.exports = app => {
     // Retrieve all Survey
     router.get('/', auth.isAuthenticated, surveys.findAll);
 
-    // Retrieve a single Survey with id
-    router.get('/:id', auth.isAuthenticated, surveys.findOne);
+    // Search for a Survey by name
+    router.get('/:name', auth.isAuthenticated, surveys.findByName);
 
     // Retrieve all Survey equals an id
-    router.get('/survey-statuses/:id/surveys', auth.isAuthenticated, surveys.findAllBySurveyStatusId);
+    router.get('/survey-statuses/:id/surveys', auth.isAuthenticated, surveys.findBySurveyStatusId);
+
+    // Retrieve a single Survey with id
+    router.get('/:id', auth.isAuthenticated, surveys.findOne);
 
     // Update a Survey with id
     router.put('/:id', auth.isAuthenticated, surveys.update);

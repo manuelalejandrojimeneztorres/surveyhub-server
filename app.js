@@ -67,7 +67,12 @@ app.get('/', (req, res) => {
       { path: '/api/v1/question-options', description: 'Manage available options for survey questions.' },
       { path: '/api/v1/question-options/questions/:id/question-options', description: 'Retrieve and manage options for questions associated with a specific question ID.' },
       { path: '/api/v1/system-users', description: 'Manage system users, including the creation, retrieval, and updating of user profiles.' },
-      { path: '/api/v1/system-users/signin', description: 'Authenticate system users and provide access tokens for session management.' }
+      { path: '/api/v1/system-users/signin', description: 'Authenticate system users and provide access tokens for session management.' },
+      { path: '/api/v1/roles', description: 'Manage system roles, including creation, retrieval, and updating of role definitions.' },
+      { path: '/api/v1/system-user-roles', description: 'Manage the assignment of roles to system users, providing many-to-many relationship data between users and roles.' },
+      { path: '/api/v1/responses', description: 'Manage survey responses, including creation and retrieval of response data.' },
+      { path: '/api/v1/answers', description: 'Manage individual answers submitted within survey responses.' },
+      { path: '/api/v1/answer-options', description: 'Retrieve and manage predefined options available for survey answers.' }
     ],
     documentationLink: '/docs',
     authEnabled: true,
@@ -123,6 +128,11 @@ require('./routes/questiontype.routes')(app);
 require('./routes/question.routes')(app);
 require('./routes/questionoption.routes')(app);
 require('./routes/systemuser.routes')(app);
+require('./routes/role.routes')(app);
+require('./routes/systemuserrole.routes')(app);
+require('./routes/response.routes')(app);
+require('./routes/answer.routes')(app);
+require('./routes/answeroption.routes')(app);
 
 app.listen(port, () => {
   console.log(`App listening on port ${port}`);

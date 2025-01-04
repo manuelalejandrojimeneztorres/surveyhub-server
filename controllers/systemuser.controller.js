@@ -3,7 +3,7 @@ const SystemUser = db.systemuser;
 const Op = db.Sequelize.Op;
 const bcrypt = require('bcryptjs');
 const saltRounds = 12;
-const utils = require('../utils');
+const utils = require('../utils/auth.utils');
 const fs = require('fs');
 const path = require('path');
 
@@ -77,6 +77,111 @@ exports.findAll = (req, res) => {
             res.status(500).send({
                 message:
                     err.message || 'Some error occurred while retrieving SystemUser.'
+            });
+        });
+};
+
+// Search for a SystemUser by loginName
+exports.findByLoginName = (req, res) => {
+    // Get the loginName from the URL parameters
+    const systemUserLoginName = req.params.loginName;
+
+    // Validate if a loginName was passed
+    if (!systemUserLoginName) {
+        return res.status(400).send({
+            message: 'SystemUser loginName must be provided.'
+        });
+    }
+
+    // Perform search with LIKE operator (case insensitive search)
+    SystemUser.findAll({
+        where: {
+            loginName: {
+                [Op.like]: `%${systemUserLoginName}%` // Partial match with LIKE
+            }
+        }
+    })
+        .then(data => {
+            if (data.length === 0) {
+                return res.status(404).send({
+                    message: `No SystemUser found with loginName ${systemUserLoginName}.`
+                });
+            }
+            res.send(data);
+        })
+        .catch(err => {
+            res.status(500).send({
+                message: err.message || 'Some error occurred while retrieving the SystemUser.'
+            });
+        });
+};
+
+// Search for a SystemUser by emailAddress
+exports.findByEmailAddress = (req, res) => {
+    // Get the emailAddress from the URL parameters
+    const systemUserEmailAddress = req.params.emailAddress;
+
+    // Validate if a emailAddress was passed
+    if (!systemUserEmailAddress) {
+        return res.status(400).send({
+            message: 'SystemUser emailAddress must be provided.'
+        });
+    }
+
+    // Perform search with LIKE operator (case insensitive search)
+    SystemUser.findAll({
+        where: {
+            emailAddress: {
+                [Op.like]: `%${systemUserEmailAddress}%` // Partial match with LIKE
+            }
+        }
+    })
+        .then(data => {
+            if (data.length === 0) {
+                return res.status(404).send({
+                    message: `No SystemUser found with emailAddress ${systemUserEmailAddress}.`
+                });
+            }
+            res.send(data);
+        })
+        .catch(err => {
+            res.status(500).send({
+                message: err.message || 'Some error occurred while retrieving the SystemUser.'
+            });
+        });
+};
+
+// Search for a SystemUser by phoneNumber
+exports.findByPhoneNumber = (req, res) => {
+    // Get the phoneNumber from the URL parameters
+    const systemUserPhoneNumber = req.params.phoneNumber;
+
+    // Validate if a phoneNumber was passed
+    if (!systemUserPhoneNumber) {
+        return res.status(400).send({
+            message: 'SystemUser phoneNumber must be provided.'
+        });
+    }
+
+    // Perform search with LIKE operator (case insensitive search)
+    SystemUser.findAll({
+        where: {
+            phoneNumber: {
+                [Op.like]: `%${systemUserPhoneNumber}%` // Partial match with LIKE
+            }
+        }
+    })
+        .then(data => {
+            if (data.length === 0) {
+                return res.status(404).send({
+                    message: `No SystemUser found with phoneNumber ${systemUserPhoneNumber}.`
+                });
+            }
+            res.send(data);
+        })
+        .catch(err => {
+            res.status(500).send({
+                message: err.message || 'Some error occurred while retrieving the SystemUser.'
             });
         });
 };
@@ -209,7 +314,7 @@ exports.update = async (req, res) => {
             req.body.profilePicture = newProfilePicture;
         }
 
-        // Update updatedAt with current date and time only when the user is updated
+        // Update updatedAt with current date and time only when the SystemUser is updated
         req.body.updatedAt = new Date();
 
         // Update user data

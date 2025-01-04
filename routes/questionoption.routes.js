@@ -14,7 +14,7 @@ module.exports = app => {
     router.get('/:id', auth.isAuthenticated, questionOptions.findOne);
 
     // Retrieve all QuestionOption equals an id
-    router.get('/questions/:id/question-options', auth.isAuthenticated, questionOptions.findAllByQuestionId);
+    router.get('/questions/:id/question-options', auth.isAuthenticated, questionOptions.findByQuestionId);
 
     // Update a QuestionOption with id
     router.put('/:id', auth.isAuthenticated, questionOptions.update);

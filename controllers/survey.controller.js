@@ -52,8 +52,43 @@ exports.findAll = (req, res) => {
         });
 };
 
+// Search for a Survey by name
+exports.findByName = (req, res) => {
+    // Get the name from the URL parameters
+    const surveyName = req.params.name;
+
+    // Validate if a name was passed
+    if (!surveyName) {
+        return res.status(400).send({
+            message: 'Survey name must be provided.'
+        });
+    }
+
+    // Perform search with LIKE operator (case insensitive search)
+    Survey.findAll({
+        where: {
+            name: {
+                [Op.like]: `%${surveyName}%` // Partial match with LIKE
+            }
+        }
+    })
+        .then(data => {
+            if (data.length === 0) {
+                return res.status(404).send({
+                    message: `No Survey found with name ${surveyName}.`
+                });
+            }
+            res.send(data);
+        })
+        .catch(err => {
+            res.status(500).send({
+                message: err.message || 'Some error occurred while retrieving the Survey.'
+            });
+        });
+};
+
 // Retrieve all Survey from the database
-exports.findAllBySurveyStatusId = (req, res) => {
+exports.findBySurveyStatusId = (req, res) => {
     const id = req.params.id;
 
     Survey.findAll({ where: { surveyStatusId: id } })
@@ -92,7 +127,7 @@ exports.findOne = (req, res) => {
 exports.update = (req, res) => {
     const id = req.params.id;
 
-    // Update updatedAt with current date and time only when the user is updated
+    // Update updatedAt with current date and time only when the Survey is updated
     req.body.updatedAt = new Date();
 
     Survey.update(req.body, {

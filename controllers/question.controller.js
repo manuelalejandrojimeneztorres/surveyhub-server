@@ -50,8 +50,43 @@ exports.findAll = (req, res) => {
         });
 };
 
+// Search for a Question by text
+exports.findByName = (req, res) => {
+    // Get the text from the URL parameters
+    const questionText = req.params.text;
+
+    // Validate if a text was passed
+    if (!questionText) {
+        return res.status(400).send({
+            message: 'Question text must be provided.'
+        });
+    }
+
+    // Perform search with LIKE operator (case insensitive search)
+    Question.findAll({
+        where: {
+            text: {
+                [Op.like]: `%${questionText}%` // Partial match with LIKE
+            }
+        }
+    })
+        .then(data => {
+            if (data.length === 0) {
+                return res.status(404).send({
+                    message: `No Question found with text ${questionText}.`
+                });
+            }
+            res.send(data);
+        })
+        .catch(err => {
+            res.status(500).send({
+                message: err.message || 'Some error occurred while retrieving the Question.'
+            });
+        });
+};
+
 // Retrieve all Question from the database
-exports.findAllBySurveyId = (req, res) => {
+exports.findBySurveyId = (req, res) => {
     const id = req.params.id;
 
     Question.findAll({ where: { surveyId: id } })
@@ -66,7 +101,7 @@ exports.findAllBySurveyId = (req, res) => {
 };
 
 // Retrieve all Question from the database
-exports.findAllByQuestionTypeId = (req, res) => {
+exports.findByQuestionTypeId = (req, res) => {
     const id = req.params.id;
 
     Question.findAll({ where: { questionTypeId: id } })
@@ -105,7 +140,7 @@ exports.findOne = (req, res) => {
 exports.update = (req, res) => {
     const id = req.params.id;
 
-    // Update updatedAt with current date and time only when the user is updated
+    // Update updatedAt with current date and time only when the Question is updated
     req.body.updatedAt = new Date();
 
     Question.update(req.body, {

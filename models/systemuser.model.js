@@ -235,5 +235,21 @@ module.exports = (sequelize, Sequelize) => {
         ]
     });
 
+    SystemUser.associate = function (models) {
+        SystemUser.hasMany(models.response, {
+            foreignKey: 'systemUserId'
+        });
+
+        SystemUser.belongsToMany(models.role, {
+            through: models.systemuserrole,
+            foreignKey: 'systemUserId',
+            otherKey: 'roleId',
+        });
+
+        SystemUser.hasMany(models.systemuserrole, {
+            foreignKey: 'systemUserId'
+        });
+    };
+
     return SystemUser;
 };

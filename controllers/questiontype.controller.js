@@ -46,6 +46,41 @@ exports.findAll = (req, res) => {
         });
 };
 
+// Search for a QuestionType by type
+exports.findByName = (req, res) => {
+    // Get the type from the URL parameters
+    const typeName = req.params.type;
+
+    // Validate if a type was passed
+    if (!typeName) {
+        return res.status(400).send({
+            message: 'QuestionType type must be provided.'
+        });
+    }
+
+    // Perform search with LIKE operator (case insensitive search)
+    QuestionType.findAll({
+        where: {
+            type: {
+                [Op.like]: `%${typeName}%` // Partial match with LIKE
+            }
+        }
+    })
+        .then(data => {
+            if (data.length === 0) {
+                return res.status(404).send({
+                    message: `No QuestionType found with type ${typeName}.`
+                });
+            }
+            res.send(data);
+        })
+        .catch(err => {
+            res.status(500).send({
+                message: err.message || 'Some error occurred while retrieving the QuestionType.'
+            });
+        });
+};
+
 // Find a single QuestionType with an id
 exports.findOne = (req, res) => {
     const id = req.params.id;
@@ -71,7 +106,7 @@ exports.findOne = (req, res) => {
 exports.update = (req, res) => {
     const id = req.params.id;
 
-    // Update updatedAt with current date and time only when the user is updated
+    // Update updatedAt with current date and time only when the QuestionType is updated
     req.body.updatedAt = new Date();
 
     QuestionType.update(req.body, {

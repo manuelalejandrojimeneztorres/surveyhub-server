@@ -1,11 +1,11 @@
 const db = require('../models');
-const QuestionOption = db.questionoption;
+const Answer = db.answer;
 const Op = db.Sequelize.Op;
 
-// Create and Save a new QuestionOption
+// Create and Save a new Answer
 exports.create = (req, res) => {
     // Validate request
-    if (!req.body.questionId || !req.body.order || !req.body.value) {
+    if (!req.body.responseId || !req.body.questionId) {
         res.status(400).send({
             message: 'Content can not be empty.'
         });
@@ -13,126 +13,141 @@ exports.create = (req, res) => {
         return;
     }
 
-    // Create a QuestionOption
-    const questionOption = {
+    // Create a Answer
+    const answer = {
+        responseId: req.body.responseId,
         questionId: req.body.questionId,
-        order: req.body.order,
-        value: req.body.value,
+        answer: req.body.answer,
         createdAt: new Date()
     };
 
-    // Save QuestionOption in the database
-    QuestionOption.create(questionOption)
+    // Save Answer in the database
+    Answer.create(answer)
         .then(data => {
             res.send(data);
         })
         .catch(err => {
             res.status(500).send({
                 message:
-                    err.message || 'Some error occurred while creating the QuestionOption.'
+                    err.message || 'Some error occurred while creating the Answer.'
             });
         });
 };
 
-// Retrieve all QuestionOption from the database
+// Retrieve all Answer from the database
 exports.findAll = (req, res) => {
-    QuestionOption.findAll()
+    Answer.findAll()
         .then(data => {
             res.send(data);
         })
         .catch(err => {
             res.status(500).send({
                 message:
-                    err.message || 'Some error occurred while retrieving QuestionOption.'
+                    err.message || 'Some error occurred while retrieving Answer.'
             });
         });
 };
 
-// Retrieve all QuestionOption from the database
+// Retrieve all Answer from the database
+exports.findByResponseId = (req, res) => {
+    const id = req.params.id;
+
+    Answer.findAll({ where: { responseId: id } })
+        .then(data => {
+            res.send(data);
+        })
+        .catch(err => {
+            res.status(500).send({
+                message: err.message || 'Some error occurred while retrieving Answer.'
+            });
+        });
+};
+
+// Retrieve all Answer from the database
 exports.findByQuestionId = (req, res) => {
     const id = req.params.id;
 
-    QuestionOption.findAll({ where: { questionId: id } })
+    Answer.findAll({ where: { questionId: id } })
         .then(data => {
             res.send(data);
         })
         .catch(err => {
             res.status(500).send({
-                message: err.message || 'Some error occurred while retrieving QuestionOption.'
+                message: err.message || 'Some error occurred while retrieving Answer.'
             });
         });
 };
 
-// Find a single QuestionOption with an id
+// Find a single Answer with an id
 exports.findOne = (req, res) => {
     const id = req.params.id;
 
-    QuestionOption.findByPk(id)
+    Answer.findByPk(id)
         .then(data => {
             if (data) {
                 res.send(data);
             } else {
                 res.status(404).send({
-                    message: `Cannot find QuestionOption with id=${id}.`
+                    message: `Cannot find Answer with id=${id}.`
                 });
             }
         })
         .catch(err => {
             res.status(500).send({
-                message: 'Error retrieving QuestionOption with id=' + id
+                message: 'Error retrieving Answer with id=' + id
             });
         });
 };
 
-// Update a QuestionOption by the id in the request
+// Update a Answer by the id in the request
 exports.update = (req, res) => {
     const id = req.params.id;
 
-    // Update updatedAt with current date and time only when the QuestionOption is updated
+    // Update updatedAt with current date and time only when the Answer is updated
     req.body.updatedAt = new Date();
 
-    QuestionOption.update(req.body, {
+    Answer.update(req.body, {
         where: { id: id }
     })
         .then(num => {
             if (num == 1) {
                 res.send({
-                    message: 'QuestionOption was updated successfully.'
+                    message: 'Answer was updated successfully.'
                 });
             } else {
                 res.send({
-                    message: `Cannot update QuestionOption with id=${id}. Maybe QuestionOption was not found or req.body is empty.`
+                    message: `Cannot update Answer with id=${id}. Maybe Answer was not found or req.body is empty.`
                 });
             }
         })
         .catch(err => {
             res.status(500).send({
-                message: 'Error updating QuestionOption with id=' + id
+                message: 'Error updating Answer with id=' + id
             });
         });
 };
 
-// Delete a QuestionOption with the specified id in the request
+// Delete a Answer with the specified id in the request
 exports.delete = (req, res) => {
     const id = req.params.id;
 
-    QuestionOption.destroy({
+    Answer.destroy({
         where: { id: id }
     })
         .then(num => {
             if (num == 1) {
                 res.send({
-                    message: 'QuestionOption was deleted successfully.'
+                    message: 'Answer was deleted successfully.'
                 });
             } else {
                 res.send({
-                    message: `Cannot delete QuestionOption with id=${id}. Maybe QuestionOption was not found.`
+                    message: `Cannot delete Answer with id=${id}. Maybe Answer was not found.`
                 });
             }
         })
         .catch(err => {
             res.status(500).send({
-                message: 'Could not delete QuestionOption with id=' + id
+                message: 'Could not delete Answer with id=' + id
             });
         });
 };

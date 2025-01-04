@@ -2,7 +2,7 @@
 const jwt = require('jsonwebtoken');
 
 // Generate token and return it
-function generateAccessToken(systemUser) {
+function generateAccessToken(systemUser, roles) {
     // 1. Don't use password and other sensitive fields
     // 2. Use the information that are useful in other parts
     if (!systemUser) return null;
@@ -13,7 +13,8 @@ function generateAccessToken(systemUser) {
         emailAddress: systemUser.emailAddress,
         phoneNumber: systemUser.phoneNumber,
         passwordHash: systemUser.passwordHash,
-        tokenVersion: systemUser.tokenVersion
+        tokenVersion: systemUser.tokenVersion,
+        roles
     };
 
     // .env should contain a line like JWT_SECRET=V3RY#1MP0RT@NT$3CR3T#
@@ -23,7 +24,7 @@ function generateAccessToken(systemUser) {
 }
 
 // Extract and return essential user details
-function extractBasicUserDetails(systemUser) {
+function extractBasicUserDetails(systemUser, roles) {
     if (!systemUser) return null;
 
     return {
@@ -32,7 +33,8 @@ function extractBasicUserDetails(systemUser) {
         emailAddress: systemUser.emailAddress,
         phoneNumber: systemUser.phoneNumber,
         passwordHash: systemUser.passwordHash,
-        tokenVersion: systemUser.tokenVersion
+        tokenVersion: systemUser.tokenVersion,
+        roles
     };
 }
 

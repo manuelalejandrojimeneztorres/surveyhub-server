@@ -102,6 +102,10 @@ module.exports = (sequelize, Sequelize) => {
             onUpdate: 'CASCADE',
             onDelete: 'CASCADE'
         });
+
+        QuestionOption.hasMany(models.answeroption, {
+            foreignKey: 'questionOptionId'
+        });
     };
 
     return QuestionOption;
