@@ -1,26 +1,26 @@
 module.exports = app => {
-    const roles = require('../controllers/role.controller.js');
-    const auth = require('../controllers/auth.controller.js');
-
-    var router = require('express').Router();
+    const roleController = require('../controllers/role.controller.js');
+    const authController = require('../controllers/auth.controller.js');
+    const { validateTokenVersion, authorizeRoles } = require('../middlewares/auth.middleware');
+    const router = require('express').Router();
 
     // Create a new Role
-    router.post('/', auth.isAuthenticated, roles.create);
+    router.post('/', authController.isAuthenticated, validateTokenVersion, authorizeRoles(['System Administrator']), roleController.create);
 
     // Retrieve all Role
-    router.get('/', auth.isAuthenticated, roles.findAll);
+    router.get('/', authController.isAuthenticated, validateTokenVersion, authorizeRoles(['System Administrator', 'Survey Manager']), roleController.findAll);
 
     // Search for a Role by name
-    router.get('/:name', auth.isAuthenticated, roles.findByName);
+    router.get('/:name', authController.isAuthenticated, validateTokenVersion, authorizeRoles(['System Administrator', 'Survey Manager']), roleController.findByName);
 
     // Retrieve a single Role with id
-    router.get('/:id', auth.isAuthenticated, roles.findOne);
+    router.get('/:id', authController.isAuthenticated, validateTokenVersion, authorizeRoles(['System Administrator', 'Survey Manager']), roleController.findOne);
 
     // Update a Role with id
-    router.put('/:id', auth.isAuthenticated, roles.update);
+    router.put('/:id', authController.isAuthenticated, validateTokenVersion, authorizeRoles(['System Administrator']), roleController.update);
 
     // Delete a Role with id
-    router.delete('/:id', auth.isAuthenticated, roles.delete);
+    router.delete('/:id', authController.isAuthenticated, validateTokenVersion, authorizeRoles(['System Administrator']), roleController.delete);
 
     app.use('/api/v1/roles', router);
 };

@@ -1,37 +1,36 @@
 module.exports = app => {
-    const systemUsers = require('../controllers/systemuser.controller.js');
-    const auth = require('../controllers/auth.controller.js');
-
+    const systemUserController = require('../controllers/systemuser.controller.js');
     const upload = require('../middlewares/file-upload.middleware.js');
-
-    var router = require('express').Router();
+    const authController = require('../controllers/auth.controller.js');
+    const { validateTokenVersion, authorizeRoles } = require('../middlewares/auth.middleware');
+    const router = require('express').Router();
 
     // Create a new SystemUser
-    router.post('/', upload.single('profilePicture'), systemUsers.create);
+    router.post('/', upload.single('profilePicture'), systemUserController.create); // authorizeRoles(['System Administrator'])
 
     // Sign In
-    router.post('/signin', auth.signin);
+    router.post('/signin', authController.signin);
 
     // Retrieve all SystemUser
-    router.get('/', auth.isAuthenticated, systemUsers.findAll);
+    router.get('/', authController.isAuthenticated, validateTokenVersion, authorizeRoles(['System Administrator', 'Survey Manager']), systemUserController.findAll);
 
     // Search for a SystemUser by loginName
-    router.get('/:loginName', auth.isAuthenticated, systemUsers.findByLoginName);
+    router.get('/:loginName', authController.isAuthenticated, validateTokenVersion, authorizeRoles(['System Administrator', 'Survey Manager']), systemUserController.findByLoginName);
 
     // Search for a SystemUser by emailAddress
-    router.get('/:emailAddress', auth.isAuthenticated, systemUsers.findByEmailAddress);
+    router.get('/:emailAddress', authController.isAuthenticated, validateTokenVersion, authorizeRoles(['System Administrator', 'Survey Manager']), systemUserController.findByEmailAddress);
 
     // Search for a SystemUser by phoneNumber
-    router.get('/:phoneNumber', auth.isAuthenticated, systemUsers.findByPhoneNumber);
+    router.get('/:phoneNumber', authController.isAuthenticated, validateTokenVersion, authorizeRoles(['System Administrator', 'Survey Manager']), systemUserController.findByPhoneNumber);
 
     // Retrieve a single SystemUser with id
-    router.get('/:id', auth.isAuthenticated, systemUsers.findOne);
+    router.get('/:id', authController.isAuthenticated, validateTokenVersion, authorizeRoles(['System Administrator', 'Survey Manager', 'Respondent']), systemUserController.findOne);
 
     // Update a SystemUser with id
-    router.put('/:id', auth.isAuthenticated, upload.single('profilePicture'), systemUsers.update);
+    router.put('/:id', authController.isAuthenticated, upload.single('profilePicture'), validateTokenVersion, authorizeRoles(['System Administrator', 'Survey Manager', 'Respondent']), systemUserController.update);
 
     // Delete a SystemUser with id
-    router.delete('/:id', auth.isAuthenticated, systemUsers.delete);
+    router.delete('/:id', authController.isAuthenticated, validateTokenVersion, authorizeRoles(['System Administrator']), systemUserController.delete);
 
     app.use('/api/v1/system-users', router);
 };

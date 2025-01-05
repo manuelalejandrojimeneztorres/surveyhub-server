@@ -1,29 +1,29 @@
 module.exports = app => {
-    const surveys = require('../controllers/survey.controller.js');
-    const auth = require('../controllers/auth.controller.js');
-
-    var router = require('express').Router();
+    const surveyController = require('../controllers/survey.controller.js');
+    const authController = require('../controllers/auth.controller.js');
+    const { validateTokenVersion, authorizeRoles } = require('../middlewares/auth.middleware');
+    const router = require('express').Router();
 
     // Create a new Survey
-    router.post('/', auth.isAuthenticated, surveys.create);
+    router.post('/', authController.isAuthenticated, validateTokenVersion, authorizeRoles(['System Administrator', 'Survey Manager']), surveyController.create);
 
     // Retrieve all Survey
-    router.get('/', auth.isAuthenticated, surveys.findAll);
+    router.get('/', authController.isAuthenticated, validateTokenVersion, authorizeRoles(['System Administrator', 'Survey Manager', 'Respondent']), surveyController.findAll);
 
     // Search for a Survey by name
-    router.get('/:name', auth.isAuthenticated, surveys.findByName);
+    router.get('/:name', authController.isAuthenticated, validateTokenVersion, authorizeRoles(['System Administrator', 'Survey Manager', 'Respondent']), surveyController.findByName);
 
     // Retrieve all Survey equals an id
-    router.get('/survey-statuses/:id/surveys', auth.isAuthenticated, surveys.findBySurveyStatusId);
+    router.get('/survey-statuses/:id/surveys', authController.isAuthenticated, validateTokenVersion, authorizeRoles(['System Administrator', 'Survey Manager']), surveyController.findBySurveyStatusId);
 
     // Retrieve a single Survey with id
-    router.get('/:id', auth.isAuthenticated, surveys.findOne);
+    router.get('/:id', authController.isAuthenticated, validateTokenVersion, authorizeRoles(['System Administrator', 'Survey Manager', 'Respondent']), surveyController.findOne);
 
     // Update a Survey with id
-    router.put('/:id', auth.isAuthenticated, surveys.update);
+    router.put('/:id', authController.isAuthenticated, validateTokenVersion, authorizeRoles(['System Administrator', 'Survey Manager']), surveyController.update);
 
     // Delete a Survey with id
-    router.delete('/:id', auth.isAuthenticated, surveys.delete);
+    router.delete('/:id', authController.isAuthenticated, validateTokenVersion, authorizeRoles(['System Administrator', 'Survey Manager']), surveyController.delete);
 
     app.use('/api/v1/surveys', router);
 };

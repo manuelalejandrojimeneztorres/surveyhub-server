@@ -1,29 +1,29 @@
 module.exports = app => {
-    const answerOptions = require('../controllers/answeroption.controller.js');
-    const auth = require('../controllers/auth.controller.js');
-
-    var router = require('express').Router();
+    const answerOptionController = require('../controllers/answeroption.controller.js');
+    const authController = require('../controllers/auth.controller.js');
+    const { validateTokenVersion, authorizeRoles } = require('../middlewares/auth.middleware');
+    const router = require('express').Router();
 
     // Create a new AnswerOption
-    router.post('/', auth.isAuthenticated, answerOptions.create);
+    router.post('/', authController.isAuthenticated, validateTokenVersion, authorizeRoles(['System Administrator', 'Survey Manager']), answerOptionController.create);
 
     // Retrieve all AnswerOption
-    router.get('/', auth.isAuthenticated, answerOptions.findAll);
+    router.get('/', authController.isAuthenticated, validateTokenVersion, authorizeRoles(['System Administrator', 'Survey Manager', 'Respondent']), answerOptionController.findAll);
 
     // Retrieve all AnswerOption equals an id
-    router.get('/answers/:id', auth.isAuthenticated, answerOptions.findByAnswerId);
+    router.get('/answers/:id', authController.isAuthenticated, validateTokenVersion, authorizeRoles(['System Administrator', 'Survey Manager', 'Respondent']), answerOptionController.findByAnswerId);
 
     // Retrieve all AnswerOption equals an id
-    router.get('/question-options/:id', auth.isAuthenticated, answerOptions.findByQuestionOptionId);
+    router.get('/question-options/:id', authController.isAuthenticated, validateTokenVersion, authorizeRoles(['System Administrator', 'Survey Manager', 'Respondent']), answerOptionController.findByQuestionOptionId);
 
     // Retrieve a single AnswerOption with id
-    router.get('/:id', auth.isAuthenticated, answerOptions.findOne);
+    router.get('/:id', authController.isAuthenticated, validateTokenVersion, authorizeRoles(['System Administrator', 'Survey Manager', 'Respondent']), answerOptionController.findOne);
 
     // Update a AnswerOption with id
-    router.put('/:id', auth.isAuthenticated, answerOptions.update);
+    router.put('/:id', authController.isAuthenticated, validateTokenVersion, authorizeRoles(['System Administrator', 'Survey Manager']), answerOptionController.update);
 
     // Delete a AnswerOption with id
-    router.delete('/:id', auth.isAuthenticated, answerOptions.delete);
+    router.delete('/:id', authController.isAuthenticated, validateTokenVersion, authorizeRoles(['System Administrator', 'Survey Manager']), answerOptionController.delete);
 
     app.use('/api/v1/answer-options', router);
 };
