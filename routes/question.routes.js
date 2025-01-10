@@ -11,7 +11,7 @@ module.exports = app => {
     router.get('/', authController.isAuthenticated, validateTokenVersion, authorizeRoles(['System Administrator', 'Survey Manager', 'Respondent']), questionController.findAll);
 
     // Search for a Question by text
-    router.get('/:text', authController.isAuthenticated, validateTokenVersion, authorizeRoles(['System Administrator', 'Survey Manager', 'Respondent']), questionController.findByName);
+    // router.get('/:text', authController.isAuthenticated, validateTokenVersion, authorizeRoles(['System Administrator', 'Survey Manager', 'Respondent']), questionController.findByName);
 
     // Retrieve all Question equals an id
     router.get('/surveys/:id/questions', authController.isAuthenticated, validateTokenVersion, authorizeRoles(['System Administrator', 'Survey Manager', 'Respondent']), questionController.findBySurveyId);

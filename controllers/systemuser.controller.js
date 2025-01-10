@@ -4,6 +4,7 @@ const Op = db.Sequelize.Op;
 const bcrypt = require('bcryptjs');
 const saltRounds = 12;
 const utils = require('../utils/auth.utils');
+const { assignRoleToSystemUser } = require('../utils/systemuser.utils');
 const fs = require('fs');
 const path = require('path');
 
@@ -30,8 +31,8 @@ exports.create = async (req, res) => {
         // Hashear la contraseña antes de guardar
         const hashedPassword = await bcrypt.hash(passwordHash, saltRounds);
 
-        // Crear un nuevo usuario
-        const systemUser = {
+        // Crear y almacenar el nuevo usuario en la base de datos
+        const systemUser = await SystemUser.create({
             loginName,
             firstName,
             lastName,
@@ -42,10 +43,7 @@ exports.create = async (req, res) => {
             tokenVersion,
             profilePicture: req.file ? req.file.filename : '', // : null
             createdAt: new Date()
-        };
-
-        // Save user in database
-        await SystemUser.create(systemUser);
+        });
 
         /*  // Save user in database
             const data = await SystemUser.create(systemUser);
@@ -58,6 +56,9 @@ exports.create = async (req, res) => {
         
             // Return the access token along with user details
             return res.json({ user: userDetails, access_token: accessToken });  */
+
+        // Assign the role with minimum privileges 'Respondent' to the new user
+        await assignRoleToSystemUser(systemUser.id, 'Respondent');
 
         return res.status(201).json({ message: 'User created successfully' });
 
@@ -82,7 +83,7 @@ exports.findAll = (req, res) => {
 };
 
 // Search for a SystemUser by loginName
-exports.findByLoginName = (req, res) => {
+/* exports.findByLoginName = (req, res) => {
     // Get the loginName from the URL parameters
     const systemUserLoginName = req.params.loginName;
 
@@ -114,10 +115,10 @@ exports.findByLoginName = (req, res) => {
                 message: err.message || 'Some error occurred while retrieving the SystemUser.'
             });
         });
-};
+}; */
 
 // Search for a SystemUser by emailAddress
-exports.findByEmailAddress = (req, res) => {
+/* exports.findByEmailAddress = (req, res) => {
     // Get the emailAddress from the URL parameters
     const systemUserEmailAddress = req.params.emailAddress;
 
@@ -149,10 +150,10 @@ exports.findByEmailAddress = (req, res) => {
                 message: err.message || 'Some error occurred while retrieving the SystemUser.'
             });
         });
-};
+}; */
 
 // Search for a SystemUser by phoneNumber
-exports.findByPhoneNumber = (req, res) => {
+/* exports.findByPhoneNumber = (req, res) => {
     // Get the phoneNumber from the URL parameters
     const systemUserPhoneNumber = req.params.phoneNumber;
 
@@ -184,7 +185,7 @@ exports.findByPhoneNumber = (req, res) => {
                 message: err.message || 'Some error occurred while retrieving the SystemUser.'
             });
         });
-};
+}; */
 
 // Find a single SystemUser with an id
 exports.findOne = (req, res) => {

@@ -11,7 +11,7 @@ module.exports = app => {
     router.get('/', authController.isAuthenticated, validateTokenVersion, authorizeRoles(['System Administrator', 'Survey Manager', 'Respondent']), questionTypeController.findAll);
 
     // Search for a QuestionType by type name
-    router.get('/:type', authController.isAuthenticated, validateTokenVersion, authorizeRoles(['System Administrator', 'Survey Manager', 'Respondent']), questionTypeController.findByName);
+    // router.get('/:type', authController.isAuthenticated, validateTokenVersion, authorizeRoles(['System Administrator', 'Survey Manager', 'Respondent']), questionTypeController.findByName);
 
     // Retrieve a single QuestionType with id
     router.get('/:id', authController.isAuthenticated, validateTokenVersion, authorizeRoles(['System Administrator', 'Survey Manager', 'Respondent']), questionTypeController.findOne);

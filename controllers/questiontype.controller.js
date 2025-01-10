@@ -47,7 +47,7 @@ exports.findAll = (req, res) => {
 };
 
 // Search for a QuestionType by type
-exports.findByName = (req, res) => {
+/* exports.findByName = (req, res) => {
     // Get the type from the URL parameters
     const typeName = req.params.type;
 
@@ -79,7 +79,7 @@ exports.findByName = (req, res) => {
                 message: err.message || 'Some error occurred while retrieving the QuestionType.'
             });
         });
-};
+}; */
 
 // Find a single QuestionType with an id
 exports.findOne = (req, res) => {

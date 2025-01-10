@@ -48,7 +48,7 @@ exports.findAll = (req, res) => {
 };
 
 // Search for a Role by name
-exports.findByName = (req, res) => {
+/* exports.findByName = (req, res) => {
     // Get the name from the URL parameters
     const roleName = req.params.name;
 
@@ -80,7 +80,7 @@ exports.findByName = (req, res) => {
                 message: err.message || 'Some error occurred while retrieving the Role.'
             });
         });
-};
+}; */
 
 // Find a single Role with an id
 exports.findOne = (req, res) => {

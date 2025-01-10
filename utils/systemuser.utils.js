@@ -27,4 +27,22 @@ async function getSystemUserRoles(systemUserId) {
     }
 }
 
-module.exports = { getSystemUserRoles };
+async function assignRoleToSystemUser(systemUserId, roleName) {
+    try {
+        const role = await Role.findOne({ where: { name: roleName } });
+        if (!role) {
+            throw new Error(`Role "${roleName}" does not exist.`);
+        }
+
+        await SystemUserRole.create({
+            systemUserId,
+            roleId: role.id,
+            createdAt: new Date()
+        });
+    } catch (error) {
+        console.error('Error assigning role to user:', error);
+        throw new Error('Failed to assign role to user.');
+    }
+}
+
+module.exports = { getSystemUserRoles, assignRoleToSystemUser };

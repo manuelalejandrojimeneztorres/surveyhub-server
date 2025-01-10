@@ -11,7 +11,7 @@ module.exports = app => {
     router.get('/', authController.isAuthenticated, validateTokenVersion, authorizeRoles(['System Administrator', 'Survey Manager', 'Respondent']), surveyStatusController.findAll);
 
     // Search for a SurveyStatus by status name
-    router.get('/:status', authController.isAuthenticated, validateTokenVersion, authorizeRoles(['System Administrator', 'Survey Manager', 'Respondent']), surveyStatusController.findByName);
+    // router.get('/:status', authController.isAuthenticated, validateTokenVersion, authorizeRoles(['System Administrator', 'Survey Manager', 'Respondent']), surveyStatusController.findByName);
 
     // Retrieve a single SurveyStatus with id
     router.get('/:id', authController.isAuthenticated, validateTokenVersion, authorizeRoles(['System Administrator', 'Survey Manager', 'Respondent']), surveyStatusController.findOne);

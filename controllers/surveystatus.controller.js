@@ -47,7 +47,7 @@ exports.findAll = (req, res) => {
 };
 
 // Search for a SurveyStatus by status
-exports.findByName = (req, res) => {
+/* exports.findByName = (req, res) => {
     // Get the status from the URL parameters
     const statusName = req.params.status;
 
@@ -79,7 +79,7 @@ exports.findByName = (req, res) => {
                 message: err.message || 'Some error occurred while retrieving the SurveyStatus.'
             });
         });
-};
+}; */
 
 // Find a single SurveyStatus with an id
 exports.findOne = (req, res) => {

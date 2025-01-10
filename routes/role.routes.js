@@ -11,7 +11,7 @@ module.exports = app => {
     router.get('/', authController.isAuthenticated, validateTokenVersion, authorizeRoles(['System Administrator', 'Survey Manager']), roleController.findAll);
 
     // Search for a Role by name
-    router.get('/:name', authController.isAuthenticated, validateTokenVersion, authorizeRoles(['System Administrator', 'Survey Manager']), roleController.findByName);
+    // router.get('/:name', authController.isAuthenticated, validateTokenVersion, authorizeRoles(['System Administrator', 'Survey Manager']), roleController.findByName);
 
     // Retrieve a single Role with id
     router.get('/:id', authController.isAuthenticated, validateTokenVersion, authorizeRoles(['System Administrator', 'Survey Manager']), roleController.findOne);

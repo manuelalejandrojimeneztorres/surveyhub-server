@@ -51,7 +51,7 @@ exports.findAll = (req, res) => {
 };
 
 // Search for a Question by text
-exports.findByName = (req, res) => {
+/* exports.findByName = (req, res) => {
     // Get the text from the URL parameters
     const questionText = req.params.text;
 
@@ -83,7 +83,7 @@ exports.findByName = (req, res) => {
                 message: err.message || 'Some error occurred while retrieving the Question.'
             });
         });
-};
+}; */
 
 // Retrieve all Question from the database
 exports.findBySurveyId = (req, res) => {

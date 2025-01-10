@@ -15,13 +15,13 @@ module.exports = app => {
     router.get('/', authController.isAuthenticated, validateTokenVersion, authorizeRoles(['System Administrator', 'Survey Manager']), systemUserController.findAll);
 
     // Search for a SystemUser by loginName
-    router.get('/:loginName', authController.isAuthenticated, validateTokenVersion, authorizeRoles(['System Administrator', 'Survey Manager']), systemUserController.findByLoginName);
+    // router.get('/:loginName', authController.isAuthenticated, validateTokenVersion, authorizeRoles(['System Administrator', 'Survey Manager']), systemUserController.findByLoginName);
 
     // Search for a SystemUser by emailAddress
-    router.get('/:emailAddress', authController.isAuthenticated, validateTokenVersion, authorizeRoles(['System Administrator', 'Survey Manager']), systemUserController.findByEmailAddress);
+    // router.get('/:emailAddress', authController.isAuthenticated, validateTokenVersion, authorizeRoles(['System Administrator', 'Survey Manager']), systemUserController.findByEmailAddress);
 
     // Search for a SystemUser by phoneNumber
-    router.get('/:phoneNumber', authController.isAuthenticated, validateTokenVersion, authorizeRoles(['System Administrator', 'Survey Manager']), systemUserController.findByPhoneNumber);
+    // router.get('/:phoneNumber', authController.isAuthenticated, validateTokenVersion, authorizeRoles(['System Administrator', 'Survey Manager']), systemUserController.findByPhoneNumber);
 
     // Retrieve a single SystemUser with id
     router.get('/:id', authController.isAuthenticated, validateTokenVersion, authorizeRoles(['System Administrator', 'Survey Manager', 'Respondent']), systemUserController.findOne);

@@ -53,7 +53,7 @@ exports.findAll = (req, res) => {
 };
 
 // Search for a Survey by name
-exports.findByName = (req, res) => {
+/* exports.findByName = (req, res) => {
     // Get the name from the URL parameters
     const surveyName = req.params.name;
 
@@ -85,7 +85,7 @@ exports.findByName = (req, res) => {
                 message: err.message || 'Some error occurred while retrieving the Survey.'
             });
         });
-};
+}; */
 
 // Retrieve all Survey from the database
 exports.findBySurveyStatusId = (req, res) => {
