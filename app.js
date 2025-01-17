@@ -50,38 +50,372 @@ db.sequelize.sync({ force: true }).then(() => {
 app.set('view engine', 'pug');
 app.set('views', path.join(__dirname, 'views'));
 
+const roles = [
+  { name: 'System Administrator', description: 'Complete access to all resources, configurations, and system settings.' },
+  { name: 'Survey Manager', description: 'Authorized to create, modify, and delete surveys, as well as manage related resources.' },
+  { name: 'Respondent', description: 'Limited to viewing and responding to assigned surveys.' }
+];
+
 app.get('/', (req, res) => {
   res.render('index', {
-    title: 'Online Survey Management System API',
-    description: 'This API facilitates the creation, management, and analysis of online surveys. It provides endpoints for creating surveys, managing questions and responses, tracking survey status, and retrieving analytical data. Designed for scalability and flexibility, this API ensures efficient survey handling and real-time data access for comprehensive survey management.',
+    title: 'SurveyHub RESTful API',
+    description: 'Your all-in-one platform for seamless survey creation, management, and analysis.',
     version: '1.0.0',
     status: 'Up and Running',
-    routes: [
-      { path: '/api/v1/survey-statuses', description: 'Retrieve the list of available survey statuses.' },
-      { path: '/api/v1/surveys', description: 'Access and manage surveys, including creation and retrieval of survey data.' },
-      { path: '/api/v1/surveys/survey-statuses/:id/surveys', description: 'Retrieve and manage surveys filtered by specific survey status ID.' },
-      { path: '/api/v1/question-types', description: 'Retrieve the list of available question types for surveys.' },
-      { path: '/api/v1/questions', description: 'Manage survey questions, including creation and retrieval of questions.' },
-      { path: '/api/v1/questions/surveys/:id/questions', description: 'Retrieve and manage questions associated with a specific survey ID.' },
-      { path: '/api/v1/questions/question-types/:id/questions', description: 'Retrieve and manage questions filtered by a specific question type ID.' },
-      { path: '/api/v1/question-options', description: 'Manage available options for survey questions.' },
-      { path: '/api/v1/question-options/questions/:id/question-options', description: 'Retrieve and manage options for questions associated with a specific question ID.' },
-      { path: '/api/v1/system-users', description: 'Manage system users, including the creation, retrieval, and updating of user profiles.' },
-      { path: '/api/v1/system-users/signin', description: 'Authenticate system users and provide access tokens for session management.' },
-      { path: '/api/v1/roles', description: 'Manage system roles, including creation, retrieval, and updating of role definitions.' },
-      { path: '/api/v1/system-user-roles', description: 'Manage the assignment of roles to system users, providing many-to-many relationship data between users and roles.' },
-      { path: '/api/v1/responses', description: 'Manage survey responses, including creation and retrieval of response data.' },
-      { path: '/api/v1/answers', description: 'Manage individual answers submitted within survey responses.' },
-      { path: '/api/v1/answer-options', description: 'Retrieve and manage predefined options available for survey answers.' }
+    endpointsByResource: [
+      {
+        "name": "Survey Statuses",
+        "endpoints": [
+          {
+            "method": "POST",
+            "path": "/api/v1/survey-statuses",
+            "description": "Create a new survey status"
+          },
+          {
+            "method": "GET",
+            "path": "/api/v1/survey-statuses",
+            "description": "Retrieve all survey statuses"
+          },
+          {
+            "method": "GET",
+            "path": "/api/v1/survey-statuses/:id",
+            "description": "Retrieve a survey status by ID"
+          },
+          {
+            "method": "PUT",
+            "path": "/api/v1/survey-statuses/:id",
+            "description": "Update a survey status by ID"
+          },
+          {
+            "method": "DELETE",
+            "path": "/api/v1/survey-statuses/:id",
+            "description": "Delete a survey status by ID"
+          }
+        ]
+      },
+      {
+        "name": "Surveys",
+        "endpoints": [
+          {
+            "method": "POST",
+            "path": "/api/v1/surveys",
+            "description": "Create a new survey"
+          },
+          {
+            "method": "GET",
+            "path": "/api/v1/surveys",
+            "description": "Retrieve all surveys"
+          },
+          {
+            "method": "GET",
+            "path": "/api/v1/surveys/:id",
+            "description": "Retrieve a survey by ID"
+          },
+          {
+            "method": "PUT",
+            "path": "/api/v1/surveys/:id",
+            "description": "Update a survey by ID"
+          },
+          {
+            "method": "DELETE",
+            "path": "/api/v1/surveys/:id",
+            "description": "Delete a survey by ID"
+          }
+        ]
+      },
+      {
+        "name": "Question Types",
+        "endpoints": [
+          {
+            "method": "POST",
+            "path": "/api/v1/question-types",
+            "description": "Create a new question type"
+          },
+          {
+            "method": "GET",
+            "path": "/api/v1/question-types",
+            "description": "Retrieve all question types"
+          },
+          {
+            "method": "GET",
+            "path": "/api/v1/question-types/:id",
+            "description": "Retrieve a question type by ID"
+          },
+          {
+            "method": "PUT",
+            "path": "/api/v1/question-types/:id",
+            "description": "Update a question type by ID"
+          },
+          {
+            "method": "DELETE",
+            "path": "/api/v1/question-types/:id",
+            "description": "Delete a question type by ID"
+          }
+        ]
+      },
+      {
+        "name": "Questions",
+        "endpoints": [
+          {
+            "method": "POST",
+            "path": "/api/v1/questions",
+            "description": "Create a new question"
+          },
+          {
+            "method": "GET",
+            "path": "/api/v1/questions",
+            "description": "Retrieve all questions"
+          },
+          {
+            "method": "GET",
+            "path": "/api/v1/questions/:id",
+            "description": "Retrieve a question by ID"
+          },
+          {
+            "method": "PUT",
+            "path": "/api/v1/questions/:id",
+            "description": "Update a question by ID"
+          },
+          {
+            "method": "DELETE",
+            "path": "/api/v1/questions/:id",
+            "description": "Delete a question by ID"
+          }
+        ]
+      },
+      {
+        "name": "Question Options",
+        "endpoints": [
+          {
+            "method": "POST",
+            "path": "/api/v1/question-options",
+            "description": "Create a new question option"
+          },
+          {
+            "method": "GET",
+            "path": "/api/v1/question-options",
+            "description": "Retrieve all question options"
+          },
+          {
+            "method": "GET",
+            "path": "/api/v1/question-options/:id",
+            "description": "Retrieve a question option by ID"
+          },
+          {
+            "method": "PUT",
+            "path": "/api/v1/question-options/:id",
+            "description": "Update a question option by ID"
+          },
+          {
+            "method": "DELETE",
+            "path": "/api/v1/question-options/:id",
+            "description": "Delete a question option by ID"
+          }
+        ]
+      },
+      {
+        "name": "System Users",
+        "endpoints": [
+          {
+            "method": "POST",
+            "path": "/api/v1/system-users/signup",
+            "description": "Sign up a new system user"
+          },
+          {
+            "method": "POST",
+            "path": "/api/v1/system-users/signin",
+            "description": "Sign in an existing system user"
+          },
+          {
+            "method": "POST",
+            "path": "/api/v1/system-users",
+            "description": "Create a new system user"
+          },
+          {
+            "method": "GET",
+            "path": "/api/v1/system-users",
+            "description": "Retrieve all system users"
+          },
+          {
+            "method": "GET",
+            "path": "/api/v1/system-users/:id",
+            "description": "Retrieve a system user by ID"
+          },
+          {
+            "method": "PUT",
+            "path": "/api/v1/system-users/:id",
+            "description": "Update a system user by ID"
+          },
+          {
+            "method": "DELETE",
+            "path": "/api/v1/system-users/:id",
+            "description": "Delete a system user by ID"
+          }
+        ]
+      },
+      {
+        "name": "Roles",
+        "endpoints": [
+          {
+            "method": "POST",
+            "path": "/api/v1/roles",
+            "description": "Create a new role"
+          },
+          {
+            "method": "GET",
+            "path": "/api/v1/roles",
+            "description": "Retrieve all roles"
+          },
+          {
+            "method": "GET",
+            "path": "/api/v1/roles/:id",
+            "description": "Retrieve a role by ID"
+          },
+          {
+            "method": "PUT",
+            "path": "/api/v1/roles/:id",
+            "description": "Update a role by ID"
+          },
+          {
+            "method": "DELETE",
+            "path": "/api/v1/roles/:id",
+            "description": "Delete a role by ID"
+          }
+        ]
+      },
+      {
+        "name": "System User Roles",
+        "endpoints": [
+          {
+            "method": "POST",
+            "path": "/api/v1/system-user-roles",
+            "description": "Create a new system user role"
+          },
+          {
+            "method": "GET",
+            "path": "/api/v1/system-user-roles",
+            "description": "Retrieve all system user roles"
+          },
+          {
+            "method": "GET",
+            "path": "/api/v1/system-user-roles/:id",
+            "description": "Retrieve a system user role by ID"
+          },
+          {
+            "method": "PUT",
+            "path": "/api/v1/system-user-roles/:id",
+            "description": "Update a system user role by ID"
+          },
+          {
+            "method": "DELETE",
+            "path": "/api/v1/system-user-roles/:id",
+            "description": "Delete a system user role by ID"
+          }
+        ]
+      },
+      {
+        "name": "Responses",
+        "endpoints": [
+          {
+            "method": "POST",
+            "path": "/api/v1/responses",
+            "description": "Create a new response"
+          },
+          {
+            "method": "GET",
+            "path": "/api/v1/responses",
+            "description": "Retrieve all responses"
+          },
+          {
+            "method": "GET",
+            "path": "/api/v1/responses/:id",
+            "description": "Retrieve a response by ID"
+          },
+          {
+            "method": "PUT",
+            "path": "/api/v1/responses/:id",
+            "description": "Update a response by ID"
+          },
+          {
+            "method": "DELETE",
+            "path": "/api/v1/responses/:id",
+            "description": "Delete a response by ID"
+          }
+        ]
+      },
+      {
+        "name": "Answers",
+        "endpoints": [
+          {
+            "method": "POST",
+            "path": "/api/v1/answers",
+            "description": "Create a new answer"
+          },
+          {
+            "method": "GET",
+            "path": "/api/v1/answers",
+            "description": "Retrieve all answers"
+          },
+          {
+            "method": "GET",
+            "path": "/api/v1/answers/:id",
+            "description": "Retrieve an answer by ID"
+          },
+          {
+            "method": "PUT",
+            "path": "/api/v1/answers/:id",
+            "description": "Update an answer by ID"
+          },
+          {
+            "method": "DELETE",
+            "path": "/api/v1/answers/:id",
+            "description": "Delete an answer by ID"
+          }
+        ]
+      },
+      {
+        "name": "Answer Options",
+        "endpoints": [
+          {
+            "method": "POST",
+            "path": "/api/v1/answer-options",
+            "description": "Create a new answer option"
+          },
+          {
+            "method": "GET",
+            "path": "/api/v1/answer-options",
+            "description": "Retrieve all answer options"
+          },
+          {
+            "method": "GET",
+            "path": "/api/v1/answer-options/:id",
+            "description": "Retrieve an answer option by ID"
+          },
+          {
+            "method": "PUT",
+            "path": "/api/v1/answer-options/:id",
+            "description": "Update an answer option by ID"
+          },
+          {
+            "method": "DELETE",
+            "path": "/api/v1/answer-options/:id",
+            "description": "Delete an answer option by ID"
+          }
+        ]
+      }
     ],
-    documentationLink: '/docs',
-    authEnabled: true,
-    authDocsLink: '/auth-docs',
+    authenticationEnabled: true,
+    authenticationDocsLink: '/docs/authentication',
+    authorizationEnabled: true,
+    authorizationDocsLink: '/docs/authorization',
+    roles,
     showExample: true,
     exampleRequest: 'curl -X GET "http://localhost:8080/api/v1/surveys?status=Open" -H "Authorization: Bearer {your_token}"',
-    supportEmail: 'support@onlinesurveymanagementsystem.com',
-    termsLink: '/terms',
-    privacyLink: '/privacy'
+    documentationLink: '/docs',
+    supportEmail: 'support@surveyhub.com',
+    companyName: 'SurveyHub, S. L.',
+    privacyLink: '/privacy',
+    termsLink: '/terms'
   });
 });
 

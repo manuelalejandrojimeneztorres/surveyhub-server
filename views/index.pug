@@ -7,43 +7,60 @@
 extends layout
 
 block content
-  h1= title
-  p #{description}
+  section(class="mb-5")
+    h2.text-center.text-primary API Information
+    p.lead.text-center A robust and secure API designed to streamline the creation, management, and analysis of online surveys. Featuring JWT-based authentication and a role-based access control (RBAC) system, it ensures secure and granular access to resources. The API provides comprehensive endpoints for managing surveys, questions, and responses, tracking survey statuses, and retrieving analytical insights. Engineered for scalability and flexibility, it supports efficient survey operations, real-time data processing, and seamless integration with cross-platform clients, enabling comprehensive survey lifecycle management.
+    ul.list-group.my-4
+      li.list-group-item
+        span.text-muted API Version: 
+        span.badge.bg-primary #{version}
+      li.list-group-item
+        span.text-muted System Status: 
+        span.badge(class=status === 'Up and Running' ? 'bg-success text-white' : 'bg-danger text-white') #{status}
 
-  // Versión de la API
-  p API Version: #{version}
-  
-  // Estado de la API
-  p System Status: #{status}
+  section(class="mb-5")
+    h2.text-center.text-success API Endpoints Overview
+    each resource in endpointsByResource
+      div(class="mb-4")
+        h3 #{resource.name}
+        ul.list-group
+          each endpoint in resource.endpoints
+            li.list-group-item
+              a(href=endpoint.path class="text-decoration-none")
+                | #{endpoint.method} #{endpoint.path} – 
+                small.text-muted #{endpoint.description}
 
-  // Rutas disponibles
-  p Available Endpoints:
-  ul
-    each route in routes
-      li
-        a(href=route.path) #{route.path} - #{route.description}
+  if authenticationEnabled
+    section(class="mb-5")
+      h2.text-center.text-warning Authentication
+      p This API employs Bearer tokens to ensure secure and authenticated access to resources.
+      p For comprehensive guidance, refer to the 
+        a(href=authenticationDocsLink class="text-decoration-none") Authentication Documentation.
 
-  // Enlace a la documentación
-  p For comprehensive API documentation, visit: 
-  a(href=documentationLink) #{documentationLink}
+  if authorizationEnabled
+    section(class="mb-5")
+      h2.text-center.text-warning Authorization
+      p This API incorporates role-based access control (RBAC) to enforce granular permission management, ensuring secure and appropriate access to resources.
+      p Roles and Permissions:
+      ul
+        each role in roles
+          li
+            strong #{role.name}:
+            |  #{role.description}
+      p For detailed information about role permissions, refer to the 
+        a(href=authorizationDocsLink class="text-decoration-none") Authorization Documentation.
 
-  // Autenticación
-  if authEnabled
-    p Authentication: This API utilizes Bearer tokens for secure access.
-    p For detailed authentication instructions, visit:
-    a(href=authDocsLink) #{authDocsLink}
-
-  // Ejemplo de uso
   if showExample
-    p Example Request:
-    pre #{exampleRequest}
+    section(class="mb-5")
+      h2.text-center.text-info Usage Example
+      pre.border.p-3.bg-light #{exampleRequest}
 
-  // Información de contacto
-  p For assistance, please contact us at: 
-  a(href='mailto:' + supportEmail) #{supportEmail}
+  section(class="text-center mt-5")
+    h2.text-secondary API Documentation
+    p For complete and detailed API documentation, access:
+    a(href=documentationLink class="btn btn-primary btn-lg text-white mt-3") Explore API Documentation
 
-  // Términos de servicio y política de privacidad
-  p Review our 
-    a(href=termsLink) Terms of Service 
-    | and 
-    a(href=privacyLink) Privacy Policy.
+  section(class="text-center mt-5")
+    h2.text-secondary Contact Us
+    p For support or inquiries, please reach out to us at:
+    a(href="mailto:" + supportEmail class="text-decoration-none") #{supportEmail}

@@ -5,10 +5,9 @@
 
 a {
   color: #00B7FF;
-}
-*/
+} */
 
-body {
+/* body {
   padding: 20px;
   font-family: "Lucida Grande", Helvetica, Arial, sans-serif;
   background-color: #f4f4f4;
@@ -36,4 +35,19 @@ ul {
 
 ul {
   padding-left: 20px;
+} */
+
+body {
+  font-family: 'Roboto', sans-serif;
+  line-height: 1.6;
+}
+
+header {
+  background: #343a40;
+  color: #fff;
+}
+
+footer {
+  background: #f8f9fa;
+  color: #6c757d;
 }
